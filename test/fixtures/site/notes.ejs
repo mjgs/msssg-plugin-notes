@@ -1,0 +1,11 @@
+---
+dictionaryName: notes
+webRoot: /archives/notes
+postsPerPage: 5
+postsByCalendar: true
+postsByCalendarItemComponent: NotesItem
+listClass: bulletless
+---
+<p>Mark Smith's Notes (By Calendar)</p>
+
+<%- await renderComponent(new components.Notes(dictionaryName, webRoot, postsPerPage, postsByCalendar), { postsByCalendarItemComponent, listClass }); %>

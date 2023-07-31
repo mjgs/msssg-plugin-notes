@@ -1,0 +1,28 @@
+{
+  "name": "msssg-plugin-notes",
+  "version": "0.0.1",
+  "description": "Ms-ssg notes plugin",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./test/fixtures/bin/app.js",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "echo 'Unit Tests:'; ./node_modules/.bin/mocha test/unit/index.test.js test/unit/**/*.test.js",
+    "test:integration": "echo 'Integration Tests:'; ./node_modules/.bin/mocha --recursive -R spec test/integration/index.test.js test/integration/**/*.test.js"
+  },
+  "author": "Mark Smith",
+  "private": true,
+  "dependencies": {
+    "debug": "^4.2.0",
+    "chalk": "^3.0.0",
+    "markdown-it": "13.0.1",
+    "msssg-plugin-postsbycalendar": "git+ssh://git@github.com-id_rsa_msssg-plugin-postsbycalendar:mjgs/msssg-plugin-postsbycalendar"
+  },
+  "devDependencies": {
+    "mark-smiths-ssg": "git+ssh://git@github.com-id_rsa_msssg:mjgs/mark-smiths-ssg",
+    "chai": "^4.3.6",
+    "chance": "^1.1.8",
+    "cheerio": "^1.0.0-rc.12",
+    "mocha": "^10.0.0",
+    "sinon": "^14.0.0"
+  }
+}
