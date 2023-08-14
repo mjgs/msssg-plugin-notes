@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-const debug = require('debug')('msssg-plugin-notes:test:integration:notesByCalendar'); // eslint-disable-line no-unused-vars
+const debug = require('debug')('msssg-plugin-notes:test:integration:notesWithoutDateTimePrefix'); // eslint-disable-line no-unused-vars
 
 const expect = require('chai').expect;
 const cheerio = require('cheerio');
@@ -33,11 +33,11 @@ describe('Notes pages', function() {
     });
   });
   
-   it('should render the main notes page', function(done) {
+   it('should render the notesWithoutDateTimePrefix notes page', function(done) {
     // setup
     const outputPath = path.join(
       this.outputDir,
-      'linksByCalendar',
+      'notesWithoutDateTimePrefix',
       'index.html'
     );
     
