@@ -35,7 +35,7 @@ on:
         default: none
 
 env:
-  nodejs_version: ${{ github.event.inputs.nodejs_version || '16.14.2' }}
+  nodejs_version: ${{ github.event.inputs.nodejs_version || '20.4.0' }}
   deploy_enabled: ${{ github.event.inputs.deploy_enabled || 'yes' }}
   backup_enabled: ${{ github.event.inputs.backup_enabled || 'no' }}
   artifact_name: build
