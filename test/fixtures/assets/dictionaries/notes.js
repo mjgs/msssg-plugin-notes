@@ -18,5 +18,5 @@ module.exports = function(app) {
   };
   
   return app.utils.load.calendar
-    .daily(linkblogDataDir, options);
+    .daily(notesDataDir, options);
 };
