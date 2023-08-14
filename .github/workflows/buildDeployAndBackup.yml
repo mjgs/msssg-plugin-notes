@@ -113,7 +113,7 @@ jobs:
           echo "Total size blog dir: $(du -sh blog)"
           echo "Total size linkblog dir: $(du -sh linkblog)"
           echo "Total size notes dir: $(du -sh notes)"
-          echo "Total size notes dir: $(du -sh podcast)"
+          echo "Total size podcast dir: $(du -sh podcast)"
  
       - name: Setup NodeJS
         uses: actions/setup-node@v3
