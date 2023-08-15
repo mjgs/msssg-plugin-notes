@@ -4,9 +4,10 @@ webRoot: /archives/notes
 postsPerPage: 5
 postsByCalendar: true
 perDateItemOrdering: chronological
+postsByCalendarItemComponentName: NotesItem
 dateTimePrefix: false
 listClass: bulletless
 ---
 <p>Mark Smith's Notes (By Calendar)</p>
 
-<%- await renderComponent(new components.Notes(dictionaryName, webRoot, postsPerPage, postsByCalendar, perDateItemOrdering), { dateTimePrefix, postsByCalendarItemComponent, listClass }); %>
+<%- await renderComponent(new components.Notes(dictionaryName, webRoot, postsPerPage, postsByCalendar, perDateItemOrdering), { dateTimePrefix, postsByCalendarItemComponentName, listClass }); %>
