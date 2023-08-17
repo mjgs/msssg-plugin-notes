@@ -12,4 +12,4 @@ itemTitleHtmlTag: h2
 ---
 <p>Mark Smith's Notes (With Datetime Prefix)</p>
 
-<%- await renderComponent(new components.Notes(dictionaryName, webRoot, perPage, perDateItemOrdering, postsByCalendar), { itemTitleHtmlTag, dateTimePrefix, postsByCalendarItemComponentName, listClass }); %>
+<%- await renderComponent(new components.Notes(dictionaryName, author, webRoot, perPage, perDateItemOrdering, postsByCalendar), { itemTitleHtmlTag, dateTimePrefix, postsByCalendarItemComponentName, listClass }); %>
