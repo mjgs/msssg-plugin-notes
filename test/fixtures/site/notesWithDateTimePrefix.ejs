@@ -1,14 +1,15 @@
 ---
 dictionaryName: notes
-webRoot: /archives/notes
-perPage: 5
-postsByCalendar: true
+author: Mark Smith
+webRoot: /notes
+perPage: 50
 perDateItemOrdering: chronological
+postsByCalendar: true
 postsByCalendarItemComponentName: NotesItem
 dateTimePrefix: true
 listClass: bulletless
 itemTitleHtmlTag: h2
 ---
-<p>Mark Smith's Notes (By Calendar)</p>
+<p>Mark Smith's Notes (With Datetime Prefix)</p>
 
-<%- await renderComponent(new components.Notes(dictionaryName, webRoot, perPage, postsByCalendar, perDateItemOrdering), { itemTitleHtmlTag, dateTimePrefix, postsByCalendarItemComponentName, listClass }); %>
+<%- await renderComponent(new components.Notes(dictionaryName, author, webRoot, perPage, perDateItemOrdering, postsByCalendar), { itemTitleHtmlTag, dateTimePrefix, postsByCalendarItemComponentName, listClass }); %>
