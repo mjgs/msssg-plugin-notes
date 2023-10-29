@@ -1,0 +1,12 @@
+---
+dictionaryName: notes
+sortedBy: sortedByItem
+author: Mark Smith
+webRoot: /notes
+perPage: 50
+perDateItemOrdering: chronological
+dateTimePrefix: false
+---
+<p>Mark Smith's Notes (Without Datetime Prefix)</p>
+
+<%- await renderComponent(new components.Linkblog(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, dateTimePrefix, undefined, undefined), {}); %>
