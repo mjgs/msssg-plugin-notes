@@ -134,7 +134,7 @@ jobs:
           NOTES_DATA_DIR: 'test/fixtures/_posts/notes'
           HIGHLIGHTER_URL_JS: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js'
           HIGHLIGHTER_URL_CSS: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css'
-          DEBUG: ${{ 'msssg-plugin-notes:lib:components:Notes,msssg-plugin-posts:lib:components:Posts' || github.event.inputs.debug || '' }}
+          DEBUG: ${{ 'msssg-plugin-notes:lib:components:Notes,msssg-plugin-posts:*' || github.event.inputs.debug || '' }}
           VERBOSITY: ${{ github.event.inputs.verbosity || 'none' }}
           npm_build_script: ${{ github.event.inputs.npm_build_script || 'build' }}
         run: |
