@@ -239,12 +239,6 @@ jobs:
           ls -lah $dist_dir/site
           echo "Functions dir:"
           ls -lah $dist_dir/functions
-      
-      - name: Setup NodeJS
-        if: ${{ env.deploy_enabled == 'yes' }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ env.nodejs_version }}
           
       - name: Deploy using Netlify CLI
         if: ${{ env.deploy_enabled == 'yes' }}
