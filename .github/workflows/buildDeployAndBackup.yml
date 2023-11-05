@@ -71,7 +71,7 @@ jobs:
           private_deploy_key_ssg: ${{ secrets.PRIVATE_DEPLOY_KEY_SSG }}
           private_deploy_key_file: ${{ secrets.PRIVATE_DEPLOY_KEY_FILE }}
           private_deploy_key_stack: ${{ secrets.PRIVATE_DEPLOY_KEY_STACK }}
-          private_deploy_key_plugin_postsbycalendar: ${{ secrets.PRIVATE_DEPLOY_KEY_PLUGIN_POSTSBYCALENDAR }}
+          private_deploy_key_plugin_posts: ${{ secrets.PRIVATE_DEPLOY_KEY_PLUGIN_POSTS }}
         run: |
           $repo_dir/test/fixtures/bin/installDeployKey.sh \
             "id_rsa_msssg" \
@@ -86,8 +86,8 @@ jobs:
             "id_rsa_stack" \
             "$private_deploy_key_stack"
           $repo_dir/test/fixtures/bin/installDeployKey.sh \
-            "id_rsa_msssg-plugin-postsbycalendar" \
-            "$private_deploy_key_plugin_postsbycalendar" 
+            "id_rsa_msssg-plugin-posts" \
+            "$private_deploy_key_plugin_posts" 
           echo "Final ssh config:"
           cat $HOME/.ssh/config
  
@@ -134,7 +134,7 @@ jobs:
           NOTES_DATA_DIR: 'test/fixtures/_posts/notes'
           HIGHLIGHTER_URL_JS: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js'
           HIGHLIGHTER_URL_CSS: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css'
-          DEBUG: ${{ github.event.inputs.debug || '' }}
+          DEBUG: ${{ 'msssg-plugin-notes:*' || github.event.inputs.debug || '' }}
           VERBOSITY: ${{ github.event.inputs.verbosity || 'none' }}
           npm_build_script: ${{ github.event.inputs.npm_build_script || 'build' }}
         run: |
