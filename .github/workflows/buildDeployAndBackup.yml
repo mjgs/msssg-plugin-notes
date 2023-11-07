@@ -41,6 +41,11 @@ env:
   artifact_name: build
   dist_dir: dist
   repo_dir: repo
+  private_deploy_key_msssg: ${{ secrets.PRIVATE_DEPLOY_KEY_MSSSG }}
+  private_deploy_key_ssg: ${{ secrets.PRIVATE_DEPLOY_KEY_SSG }}
+  private_deploy_key_file: ${{ secrets.PRIVATE_DEPLOY_KEY_FILE }}
+  private_deploy_key_stack: ${{ secrets.PRIVATE_DEPLOY_KEY_STACK }}
+  private_deploy_key_plugin_posts: ${{ secrets.PRIVATE_DEPLOY_KEY_PLUGIN_POSTS }}
  
 jobs:
   build:
@@ -66,12 +71,6 @@ jobs:
           ref: ${{ github.event.inputs.git_ref }}
  
       - name: Install Deploy Keys
-        env:
-          private_deploy_key_msssg: ${{ secrets.PRIVATE_DEPLOY_KEY_MSSSG }}
-          private_deploy_key_ssg: ${{ secrets.PRIVATE_DEPLOY_KEY_SSG }}
-          private_deploy_key_file: ${{ secrets.PRIVATE_DEPLOY_KEY_FILE }}
-          private_deploy_key_stack: ${{ secrets.PRIVATE_DEPLOY_KEY_STACK }}
-          private_deploy_key_plugin_posts: ${{ secrets.PRIVATE_DEPLOY_KEY_PLUGIN_POSTS }}
         run: |
           $repo_dir/test/fixtures/bin/installDeployKey.sh \
             "id_rsa_msssg" \
