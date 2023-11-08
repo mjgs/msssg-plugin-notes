@@ -251,6 +251,14 @@ jobs:
         env:
           bin_dir: ${{ env.repo_dir }}/test/fixtures/bin
         run: $bin_dir/installDeployKey.sh "id_rsa_scripts" "$private_deploy_key_scripts"
+        
+      - name: Clone Scripts Repo
+        env:
+          branch_to_clone: main
+          tgt_dir: ${{ env.scripts_dir }}
+        run: |
+          mkdir -p $scripts_dir && cd $scripts_dir
+          git clone -b $branch_to_clone --single-branch $scripts_repo . 
  
       - name: Download artifact
         if: ${{ contains(github.ref, 'main') || env.backup_enabled == 'yes' }}
