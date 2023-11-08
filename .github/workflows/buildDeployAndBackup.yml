@@ -41,6 +41,16 @@ env:
   artifact_name: build
   dist_dir: dist
   repo_dir: repo
+  scripts_dir: ${{ vars.SCRIPTS_DIR || 'scripts' }}
+  scripts_repo: git@github.com-id_rsa_scripts:mjgs/build-and-deploy-scripts
+  posts_repo_production: git@github.com-id_rsa_posts_prod:mjgs/personal-website-posts
+  posts_repo_development: git@github.com-id_rsa_posts_dev:mjgs/personal-website-test-data
+  private_deploy_key_scripts: ${{ secrets.PRIVATE_DEPLOY_KEY_SCRIPTS }}
+  private_deploy_key_msssg: ${{ secrets.PRIVATE_DEPLOY_KEY_MSSSG }}
+  private_deploy_key_ssg: ${{ secrets.PRIVATE_DEPLOY_KEY_SSG }}
+  private_deploy_key_file: ${{ secrets.PRIVATE_DEPLOY_KEY_FILE }}
+  private_deploy_key_stack: ${{ secrets.PRIVATE_DEPLOY_KEY_STACK }}
+  private_deploy_key_plugin_posts: ${{ secrets.PRIVATE_DEPLOY_KEY_PLUGIN_POSTS }}
  
 jobs:
   build:
@@ -67,53 +77,36 @@ jobs:
  
       - name: Install Deploy Keys
         env:
-          private_deploy_key_msssg: ${{ secrets.PRIVATE_DEPLOY_KEY_MSSSG }}
-          private_deploy_key_ssg: ${{ secrets.PRIVATE_DEPLOY_KEY_SSG }}
-          private_deploy_key_file: ${{ secrets.PRIVATE_DEPLOY_KEY_FILE }}
-          private_deploy_key_stack: ${{ secrets.PRIVATE_DEPLOY_KEY_STACK }}
-          private_deploy_key_plugin_posts: ${{ secrets.PRIVATE_DEPLOY_KEY_PLUGIN_POSTS }}
+          bin_dir: ${{ env.repo_dir }}/test/fixtures/bin
+        run: $bin_dir/installDeployKeys.sh
+          
+      - name: Clone Scripts Repo
+        env:
+          branch_to_clone: main
+          tgt_dir: ${{ env.scripts_dir }}
         run: |
-          $repo_dir/test/fixtures/bin/installDeployKey.sh \
-            "id_rsa_msssg" \
-            "$private_deploy_key_msssg"
-          $repo_dir/test/fixtures/bin/installDeployKey.sh \
-            "id_rsa_ssg" \
-            "$private_deploy_key_ssg"
-          $repo_dir/test/fixtures/bin/installDeployKey.sh \
-            "id_rsa_file" \
-            "$private_deploy_key_file"
-          $repo_dir/test/fixtures/bin/installDeployKey.sh \
-            "id_rsa_stack" \
-            "$private_deploy_key_stack"
-          $repo_dir/test/fixtures/bin/installDeployKey.sh \
-            "id_rsa_msssg-plugin-posts" \
-            "$private_deploy_key_plugin_posts" 
-          echo "Final ssh config:"
-          cat $HOME/.ssh/config
- 
+          mkdir -p $scripts_dir && cd $scripts_dir
+          git clone -b $branch_to_clone --single-branch $scripts_repo .
+          
+      - name: Set Posts Repo
+        run: $scripts_dir/setPostsRepo.sh
+          
+      # How to specify the repo??
+      # Set repo path in seperate step
+      #- name: Clone Posts Repo
+      #  uses: actions/checkout@v3
+      #  if: ${{ env.clone_posts_repo == 'yes' }} 
+      #  with:
+      #    path: ${{ env.posts_dir }}
+      #    ref: ${{ env.branch_to_clone }}
+      
       - name: Clone Posts Repo
         if: ${{ env.clone_posts_repo == 'yes' }} 
         env:
-          posts_repo_production: git@github.com-id_rsa_posts_prod:mjgs/personal-website-posts
-          posts_repo_development: git@github.com-id_rsa_posts_dev:mjgs/personal-website-test-data
+          test_mode: 'no'
+          branch_to_clone: main
           posts_dir: ${{ env.repo_dir }}/_posts
-        run: |
-          branch=${GITHUB_REF#refs/heads/}
-          echo "branch: $branch"
-          if [[ "$branch" == 'main' ]]; then
-            posts_repo="$posts_repo_production"
-          else
-            posts_repo="$posts_repo_development"
-          fi
-          echo "Cloning posts repo: $posts_repo"
-          mkdir -p $posts_dir
-          cd $posts_dir && git clone $posts_repo .
-          echo "Listing current dir: $(pwd)" && ls .
-          echo "Total file size: $(pwd): $(du -sh .)"
-          echo "Total size blog dir: $(du -sh blog)"
-          echo "Total size linkblog dir: $(du -sh linkblog)"
-          echo "Total size notes dir: $(du -sh notes)"
-          echo "Total size podcast dir: $(du -sh podcast)"
+        run: $scripts_dir/clonePostsRepo.sh 
  
       - name: Setup NodeJS
         uses: actions/setup-node@v3
@@ -121,8 +114,7 @@ jobs:
           node-version: ${{ env.nodejs_version }}
 
       - name: Install NodeJS modules
-        run: | 
-          cd $repo_dir && npm install
+        run: cd $repo_dir && npm install
  
       - name: Build Site
         env:
@@ -137,40 +129,28 @@ jobs:
           DEBUG: ${{ 'msssg-plugin-notes:*' || github.event.inputs.debug || '' }}
           VERBOSITY: ${{ github.event.inputs.verbosity || 'none' }}
           npm_build_script: ${{ github.event.inputs.npm_build_script || 'build' }}
-        run: |
-          cd $repo_dir && npm run $npm_build_script
+        run: cd $repo_dir && npm run $npm_build_script
   
       - name: Run tree
-        run: |
-          tree -ap $dist_dir
+        run: tree -ap $dist_dir
  
-      - name: Determine build size
-        run: |
-          echo "du -sh: $dist_dir"
-          du -sh $dist_dir
+      - name: Determine build size (du -sh $dist_dir)
+        run: du -sh $dist_dir
           
       - name: Check path
         if: ${{ env.check_path != '' }}
-        run: |
-          ls -lah $check_path
+        run: ls -lah $check_path
   
       - name: Run Tests
         if: ${{ env.run_tests == 'yes' }} 
         env:
-          OUTPUT_DIR: ${{ env.dist_dir }}/site
+          OUTPUT_DIR: ../${{ env.dist_dir }}/site
           DEBUG: ${{ github.event.inputs.debug || '' }}
           VERBOSITY: ${{ github.event.inputs.verbosity || 'none' }}
-        run: |
-          cd $repo_dir && npm test
+        run: cd $repo_dir && npm test
 
       - name: Create build artifact
-        run: |
-          cp $repo_dir/package-lock.json $dist_dir/site
-          ls -lah $dist_dir/site/package-lock.json
-          rm -rf $repo_dir/node_modules
-          tar -cf $artifact_name.tar $dist_dir $repo_dir
-          gzip -9 $artifact_name.tar
-          ls -lah $artifact_name.tar.gz
+        run: $scripts_dir/createBuildArtifact.sh
   
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -188,36 +168,47 @@ jobs:
       deploy_to: staging
   
     steps:
+      - name: Clone Deploy Repository (Latest)
+        uses: actions/checkout@v3
+        if: ${{ inputs.git_ref == '' }}
+        with:
+          path: ${{ env.repo_dir }}
+ 
+      - name: Clone Deploy Repository (Custom Ref)
+        uses: actions/checkout@v3
+        if: ${{ inputs.git_ref != '' }}
+        with:
+          path: ${{ env.repo_dir }}
+          ref: ${{ inputs.git_ref }}
+ 
+      - name: Install Scripts Deploy Key
+        env:
+          bin_dir: ${{ env.repo_dir }}/test/fixtures/bin
+        run: $bin_dir/installDeployKey.sh "id_rsa_scripts" "$private_deploy_key_scripts"
+
+      - name: Clone Scripts Repo
+        env:
+          branch_to_clone: main
+          tgt_dir: ${{ env.scripts_dir }}
+        run: |
+          mkdir -p $scripts_dir && cd $scripts_dir
+          git clone -b $branch_to_clone --single-branch $scripts_repo .
+ 
       - name: Set deploy target
         if: ${{ env.deploy_enabled == 'yes' }}
-        run: |
-          branch=${GITHUB_REF#refs/heads/}
-          echo "branch: $branch"
-          echo "current deploy_to: $deploy_to"
-          if [[ "$branch" == 'main' ]]; then
-            echo "setting deploy_to=production"
-            echo "deploy_to=production" >> "$GITHUB_ENV"
-          fi
-          if [[ "$branch" == 'development' ]]; then
-            echo "setting deploy_to=development"
-            echo "deploy_to=development" >> "$GITHUB_ENV"
-          fi
-          echo "final deploy_to: $deploy_to"
+        run: $scripts_dir/setDeployTarget.sh
  
       - name: Set Netlify site id (production)
         if: ${{ env.deploy_enabled == 'yes' && env.deploy_to == 'production' }}
-        run: |
-          echo "NETLIFY_SITE_ID=${{ secrets.NETLIFY_SITE_ID_PRODUCTION }}" >> "$GITHUB_ENV"
+        run: echo "NETLIFY_SITE_ID=${{ secrets.NETLIFY_SITE_ID_PRODUCTION }}" >> "$GITHUB_ENV"
  
       - name: Set Netlify site id (staging)
         if: ${{ env.deploy_enabled == 'yes' && env.deploy_to == 'staging' }}
-        run: |
-          echo "NETLIFY_SITE_ID=${{ secrets.NETLIFY_SITE_ID_STAGING }}" >> "$GITHUB_ENV"
+        run: echo "NETLIFY_SITE_ID=${{ secrets.NETLIFY_SITE_ID_STAGING }}" >> "$GITHUB_ENV"
           
       - name: Set Netlify site id (development)
         if: ${{ env.deploy_enabled == 'yes' && env.deploy_to == 'development' }}
-        run: |
-          echo "NETLIFY_SITE_ID=${{ secrets.NETLIFY_SITE_ID_DEVELOPMENT }}" >> "$GITHUB_ENV"
+        run: echo "NETLIFY_SITE_ID=${{ secrets.NETLIFY_SITE_ID_DEVELOPMENT }}" >> "$GITHUB_ENV"
 
       - name: Download artifact
         if: ${{ env.deploy_enabled == 'yes' }}
@@ -227,18 +218,7 @@ jobs:
  
       - name: Prepare build
         if: ${{ env.deploy_enabled == 'yes' }}
-        run: |
-          echo "Artifact to untar:"
-          ls -lah $artifact_name.tar.gz
-          echo "Untaring artifact files..."
-          tar -xf $artifact_name.tar.gz
-          mkdir -p $dist_dir/{site,functions}
-          echo "Current dir after untar:"
-          ls -lah
-          echo "Site dir:"
-          ls -lah $dist_dir/site
-          echo "Functions dir:"
-          ls -lah $dist_dir/functions
+        run: $scripts_dir/prepareBuild.sh
           
       - name: Deploy using Netlify CLI
         if: ${{ env.deploy_enabled == 'yes' }}
@@ -254,6 +234,32 @@ jobs:
     needs: build
   
     steps:
+      - name: Clone Deploy Repository (Latest)
+        uses: actions/checkout@v3
+        if: ${{ inputs.git_ref == '' }}
+        with:
+          path: ${{ env.repo_dir }}
+ 
+      - name: Clone Deploy Repository (Custom Ref)
+        uses: actions/checkout@v3
+        if: ${{ inputs.git_ref != '' }}
+        with:
+          path: ${{ env.repo_dir }}
+          ref: ${{ inputs.git_ref }}
+ 
+      - name: Install Scripts Deploy Key
+        env:
+          bin_dir: ${{ env.repo_dir }}/test/fixtures/bin
+        run: $bin_dir/installDeployKey.sh "id_rsa_scripts" "$private_deploy_key_scripts"
+        
+      - name: Clone Scripts Repo
+        env:
+          branch_to_clone: main
+          tgt_dir: ${{ env.scripts_dir }}
+        run: |
+          mkdir -p $scripts_dir && cd $scripts_dir
+          git clone -b $branch_to_clone --single-branch $scripts_repo . 
+ 
       - name: Download artifact
         if: ${{ contains(github.ref, 'main') || env.backup_enabled == 'yes' }}
         uses: actions/download-artifact@v3
@@ -262,33 +268,13 @@ jobs:
  
       - name: Prepare repo
         if: ${{ contains(github.ref, 'main') || env.backup_enabled == 'yes' }}
-        run: |
-          echo "Artifact to untar:"
-          ls -lah $artifact_name.tar.gz
-          echo "Untaring artifact files..."
-          tar -xf $artifact_name.tar.gz
-          echo "Current dir after untar:"
-          ls -lah
-          echo "Repo dir:"
-          ls -lah $repo_dir
+        run: $scripts_dir/prepareRepo.sh
  
       - name: Prepare backup
         if: ${{ contains(github.ref, 'main') || env.backup_enabled == 'yes' }}
         env:
-          repo_name: msssg-plugin-linkblog
-        run: |
-          suffix=$(date +"%Y-%m-%d-%H%M%S")
-          backup_name="$suffix-$repo_name-$GITHUB_REF_NAME-$GITHUB_SHA"
-          mkdir -p $repo_dir $dist_dir
-          tar -cf $backup_name.tar $repo_dir $dist_dir
-          gzip -9 $backup_name.tar
-          echo "Prepared backup file:"
-          ls -lah $backup_name.tar.gz
-          path_sufix=$(date +"%Y/%m/%d")
-          tgt_dir="$repo_name/$path_sufix"
-          tgt_file="$tgt_dir/$backup_name.tar.gz"
-          echo "tgt_file=$tgt_file" >> "$GITHUB_ENV"
-          echo "src_file=$backup_name.tar.gz" >> "$GITHUB_ENV"
+          repo_name: personal-website
+        run: $scripts_dir/prepareBackup.sh
       
       - name: Upload backup to s3 bucket
         if: ${{ contains(github.ref, 'main') || env.backup_enabled == 'yes' }}
