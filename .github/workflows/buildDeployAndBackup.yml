@@ -75,8 +75,10 @@ jobs:
           path: ${{ env.repo_dir }}
           ref: ${{ github.event.inputs.git_ref }}
  
-      - name: Install Deploy Keys 
-        run: $repo_dir/src/bin/installDeployKeys.sh
+      - name: Install Deploy Keys
+        env:
+          bin_dir: ${{ env.repo_dir }}/test/fixtures/bin
+        run: $bin_dir/installDeployKeys.sh
           
       - name: Clone Scripts Repo
         env:
@@ -180,7 +182,9 @@ jobs:
           ref: ${{ inputs.git_ref }}
  
       - name: Install Scripts Deploy Key
-        run: $repo_dir/src/bin/installDeployKey.sh "id_rsa_scripts" "$private_deploy_key_scripts"
+        env:
+          bin_dir: ${{ env.repo_dir }}/test/fixtures/bin
+        run: $bin_dir/installDeployKey.sh "id_rsa_scripts" "$private_deploy_key_scripts"
 
       - name: Clone Scripts Repo
         env:
@@ -244,7 +248,9 @@ jobs:
           ref: ${{ inputs.git_ref }}
  
       - name: Install Scripts Deploy Key
-        run: $repo_dir/src/bin/installDeployKey.sh "id_rsa_scripts" "$private_deploy_key_scripts"
+        env:
+          bin_dir: ${{ env.repo_dir }}/test/fixtures/bin
+        run: $bin_dir/installDeployKey.sh "id_rsa_scripts" "$private_deploy_key_scripts"
  
       - name: Download artifact
         if: ${{ contains(github.ref, 'main') || env.backup_enabled == 'yes' }}
