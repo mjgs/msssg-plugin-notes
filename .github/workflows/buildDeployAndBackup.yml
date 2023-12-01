@@ -57,7 +57,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      clone_posts_repo: 'no'
+      clone_posts_repo: 'yes'
       run_tests: 'no'
       check_path: ${{ github.event.inputs.check_path || '' }}
 
@@ -103,9 +103,9 @@ jobs:
       - name: Clone Posts Repo
         if: ${{ env.clone_posts_repo == 'yes' }} 
         env:
-          test_mode: 'no'
+          test_mode: 'yes'
           branch_to_clone: main
-          posts_dir: ${{ env.repo_dir }}/_posts
+          posts_dir: ${{ env.repo_dir }}/test/fixtures/_posts
         run: $scripts_dir/clonePostsRepo.sh 
  
       - name: Setup NodeJS
