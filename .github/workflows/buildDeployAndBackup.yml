@@ -43,7 +43,7 @@ env:
   repo_dir: repo
   scripts_dir: ${{ vars.SCRIPTS_DIR || 'scripts' }}
   scripts_repo: git@github.com-id_rsa_scripts:mjgs/build-and-deploy-scripts
-  posts_repo_production: git@github.com-id_rsa_posts_prod:mjgs/personal-website-posts
+  posts_repo_production: git@github.com-id_rsa_posts_dev:mjgs/personal-website-test-data
   posts_repo_development: git@github.com-id_rsa_posts_dev:mjgs/personal-website-test-data
   private_deploy_key_scripts: ${{ secrets.PRIVATE_DEPLOY_KEY_SCRIPTS }}
   private_deploy_key_msssg: ${{ secrets.PRIVATE_DEPLOY_KEY_MSSSG }}
@@ -103,7 +103,7 @@ jobs:
       - name: Clone Posts Repo
         if: ${{ env.clone_posts_repo == 'yes' }} 
         env:
-          test_mode: 'yes'
+          test_mode: 'no'
           branch_to_clone: main
           posts_dir: ${{ env.repo_dir }}/test/fixtures/_posts
         run: $scripts_dir/clonePostsRepo.sh 
