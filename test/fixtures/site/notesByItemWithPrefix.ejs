@@ -6,8 +6,7 @@ webRoot: /notes
 perPage: 50
 perDateItemOrdering: chronological
 dateTimePrefix: true
-ejsRmWhitespace: false
 ---
 <p>Mark Smith's Notes ByItem (customComponent > withPrefix)</p>
 
-<%- await renderComponent(new components.Notes(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, dateTimePrefix, postItemComponentName, postItemComponentEnvProps), {}); %>
+<%- await renderComponent(new components.Notes(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, dateTimePrefix, undefined, undefined), {}); %>
