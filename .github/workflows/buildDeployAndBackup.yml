@@ -43,8 +43,9 @@ env:
   repo_dir: repo
   scripts_dir: ${{ vars.SCRIPTS_DIR || 'scripts' }}
   scripts_repo: git@github.com-id_rsa_scripts:mjgs/build-and-deploy-scripts
-  posts_repo_production: git@github.com-id_rsa_posts_prod:mjgs/personal-website-posts
+  posts_repo_production: git@github.com-id_rsa_posts_dev:mjgs/personal-website-test-data
   posts_repo_development: git@github.com-id_rsa_posts_dev:mjgs/personal-website-test-data
+  private_deploy_key_posts_dev: ${{ secrets.PRIVATE_DEPLOY_KEY_POSTS_TEST }}
   private_deploy_key_scripts: ${{ secrets.PRIVATE_DEPLOY_KEY_SCRIPTS }}
   private_deploy_key_msssg: ${{ secrets.PRIVATE_DEPLOY_KEY_MSSSG }}
   private_deploy_key_ssg: ${{ secrets.PRIVATE_DEPLOY_KEY_SSG }}
@@ -57,7 +58,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      clone_posts_repo: 'no'
+      clone_posts_repo: 'yes'
       run_tests: 'no'
       check_path: ${{ github.event.inputs.check_path || '' }}
 
@@ -105,7 +106,7 @@ jobs:
         env:
           test_mode: 'no'
           branch_to_clone: main
-          posts_dir: ${{ env.repo_dir }}/_posts
+          posts_dir: ${{ env.repo_dir }}/test/fixtures/_posts
         run: $scripts_dir/clonePostsRepo.sh 
  
       - name: Setup NodeJS
@@ -126,7 +127,7 @@ jobs:
           NOTES_DATA_DIR: 'test/fixtures/_posts/notes'
           HIGHLIGHTER_URL_JS: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js'
           HIGHLIGHTER_URL_CSS: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css'
-          DEBUG: ${{ 'msssg-plugin-notes:*' || github.event.inputs.debug || '' }}
+          DEBUG: ${{ github.event.inputs.debug || '' }}
           VERBOSITY: ${{ github.event.inputs.verbosity || 'none' }}
           npm_build_script: ${{ github.event.inputs.npm_build_script || 'build' }}
         run: cd $repo_dir && npm run $npm_build_script

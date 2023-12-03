@@ -1,12 +1,12 @@
 ---
 dictionaryName: notes
-sortedBy: sortedByItem
+sortedBy: sortedByDateDaily
 author: Mark Smith
 webRoot: /notes
 perPage: 50
 perDateItemOrdering: chronological
 dateTimePrefix: false
 ---
-<p>Mark Smith's Notes (Without Datetime Prefix)</p>
+<p>Mark Smith's Notes ByDate (customComponent > withoutPrefix)</p>
 
 <%- await renderComponent(new components.Notes(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, dateTimePrefix, undefined, undefined), {}); %>

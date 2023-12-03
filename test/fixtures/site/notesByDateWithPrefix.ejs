@@ -7,6 +7,6 @@ perPage: 50
 perDateItemOrdering: chronological
 dateTimePrefix: true
 ---
-<p>Mark Smith's Notes (With Datetime Prefix)</p>
+<p>Mark Smith's Notes ByDate (customComponent > withPrefix)</p>
 
 <%- await renderComponent(new components.Notes(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, dateTimePrefix, undefined, undefined), {}); %>
