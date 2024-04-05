@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       clone_posts_repo: 'yes'
-      run_tests: 'no'
+      run_tests: 'yes'
       check_path: ${{ github.event.inputs.check_path || '' }}
 
     steps:
