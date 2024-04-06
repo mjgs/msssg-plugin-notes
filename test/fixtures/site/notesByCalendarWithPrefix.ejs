@@ -1,0 +1,12 @@
+---
+dictionaryName: notes
+sortedBy: calendarDaily
+author: Mark Smith
+webRoot: /notes
+perPage: 50
+perDateItemOrdering: chronological
+dateTimePrefix: true
+---
+<p>Mark Smith's Notes ByCalendar (customComponent > withPrefix)</p>
+
+<%- await renderComponent(new components.Notes(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, dateTimePrefix, undefined, undefined), {}); %>
