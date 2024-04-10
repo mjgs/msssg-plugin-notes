@@ -15,7 +15,7 @@
     "debug": "^4.2.0",
     "chalk": "^3.0.0",
     "markdown-it": "13.0.1",
-    "msssg-plugin-posts": "git+ssh://git@github.com-id_rsa_msssg-plugin-posts:mjgs/msssg-plugin-posts"
+    "msssg-plugin-posts": "git+ssh://git@github.com-id_rsa_msssg-plugin-posts:mjgs/msssg-plugin-posts#feature-no-plugins"
   },
   "devDependencies": {
     "mark-smiths-ssg": "git+ssh://git@github.com-id_rsa_msssg:mjgs/mark-smiths-ssg",
