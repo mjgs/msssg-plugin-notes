@@ -37,7 +37,7 @@ on:
 env:
   nodejs_version: ${{ github.event.inputs.nodejs_version || '20.4.0' }}
   deploy_enabled: ${{ github.event.inputs.deploy_enabled || 'no' }}
-  backup_enabled: ${{ github.event.inputs.backup_enabled || 'no' }}
+  backup_enabled: ${{ github.event.inputs.backup_enabled || 'yes' }}
   artifact_name: build
   dist_dir: dist
   repo_dir: repo
