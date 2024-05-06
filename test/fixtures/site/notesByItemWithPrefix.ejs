@@ -5,8 +5,11 @@ author: Mark Smith
 webRoot: /notes
 perPage: 50
 perDateItemOrdering: chronological
+itemTitleHtmlTag: p
 dateTimePrefix: true
+postsListClass: 'bulletless'
+itemsListClass: 'bulletless'
 ---
 <p>Mark Smith's Notes ByItem (customComponent > withPrefix)</p>
 
-<%- await renderComponent(new components.Notes(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, dateTimePrefix, undefined, undefined, undefined), {}); %>
+<%- await renderComponent(new components.Notes(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, dateTimePrefix, itemTitleHtmlTag, postsListClass, itemsListClass), {}); %>
