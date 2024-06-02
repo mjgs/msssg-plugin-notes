@@ -1,6 +1,6 @@
 {
   "name": "msssg-plugin-notes",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Ms-ssg notes plugin",
   "main": "index.js",
   "scripts": {
