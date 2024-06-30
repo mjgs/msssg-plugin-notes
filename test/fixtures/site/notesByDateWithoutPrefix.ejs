@@ -15,4 +15,4 @@ postItemComponentName: NotesItem
 
 <% const postItemComponentEnvProps = { dateTimePrefix, itemTitleHtmlTag, listClass: itemsListClass, webRoot, mergedItems: false }; %>
 
-<%- await renderComponent(new components.Notes(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, dateTimePrefix, itemTitleHtmlTag, postsListClass, itemsListClass), {}); %>
+<%- await renderComponent(new components.Notes(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, postsListClass, itemsListClass, postItemComponentName, postItemComponentEnvProps), {}); %>
