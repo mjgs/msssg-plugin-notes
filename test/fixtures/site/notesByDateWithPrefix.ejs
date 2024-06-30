@@ -9,7 +9,10 @@ itemTitleHtmlTag: p
 dateTimePrefix: true
 postsListClass: 'bulletless'
 itemsListClass: 'bulletless'
+postItemComponentName: NotesItem
 ---
 <p>Mark Smith's Notes ByDate (customComponent > withPrefix)</p>
+
+<% const postItemComponentEnvProps = { dateTimePrefix, itemTitleHtmlTag, listClass: itemsListClass, webRoot, mergedItems: false }; %>
 
 <%- await renderComponent(new components.Notes(dictionaryName, sortedBy, author, webRoot, perPage, perDateItemOrdering, dateTimePrefix, itemTitleHtmlTag, postsListClass, itemsListClass), {}); %>
